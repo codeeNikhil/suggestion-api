@@ -1,0 +1,94 @@
+## API Endpoints
+
+### 1. Search Suggestions
+
+This api is used to get data from users table .
+this api return the data based on key ,pagination and and search ranking based on frequency . currently frequency is 0 ;
+There is an api for update the frequency. (because there is not need to update frequency on get api ,it should be update on selected user from suggestion)
+For verify the ranking (use select user id put from one of the user in suggestion api... after update the ranking the suggestion api will rank the result)
+
+**Endpoint:** `GET http://localhost:3000/user-suggestion`
+
+**Query Parameters:**
+| Parameter | Type   | Required | Description |
+|-----------|--------|----------|-------------|
+| key       | String | Yes      | Search keyword for auto-completion |
+| limit     | Number | No       | Limit the number of suggestions (default: 100) |
+
+**Response:**
+```json
+  {
+  "status": true,
+  "suggestions": [
+    {
+      "id": 52557,
+      "name": "Nicholas Abbott"
+    },
+    {
+      "id": 37854,
+      "name": "Nicholas Abernathy"
+    },
+    {
+      "id": 80818,
+      "name": "Nicholas Anderson"
+    },
+  ]
+}
+```
+
+### 2. Create User
+**Endpoint:** `POST http://localhost:3000/user`
+
+**Request Body:**
+```json
+{
+  "name": "John Doe"
+}
+```
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "User created successfully"
+}
+```
+
+### 3. Select User (Update Search Frequency)  
+if data is selected from client side on front side we have to update the frequency it will rank the rank the result in future  
+**Endpoint:** `GET /api/select-user`
+
+**Query Parameters:**
+| Parameter | Type   | Required | Description |
+|-----------|--------|----------|-------------|
+| id        | Number | Yes      | User ID |
+
+**Response:**
+```json
+{
+  "status": true,
+  "message": "Search frequency updated"
+}
+```
+
+## Architectural Overview
+1. **Database**:
+   - Uses **Sequelize ** for data interaction.
+   - Stores user search frequency for ranking results.
+   - `Users` table structure:
+     ```js
+     id (PK) | name (STRING) | search_frequency (INTEGER)
+     ```
+
+2. **Caching**:
+   - Implements **node-cache** for caching search results.
+   - Checks cache before hitting the database to improve performance.
+   - Cache is invalidated on user creation.
+
+3. **Performance Optimization**:
+   - Indexed search queries in the database.
+   - Uses `LIKE` queries with indexed columns for fast search.
+   - Implements **pagination** and **limiting** to optimize large datasets.
+
+## Conclusion
+This API provides a high-performance search system with real-time auto-completion, caching, and database optimizations.
