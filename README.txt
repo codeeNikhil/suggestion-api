@@ -23,8 +23,7 @@ Ensure you have the following installed on your system:
 
 1. **Clone the repository:**
 
-   git clone <repository-url>
-   cd <project-folder>
+   git clone https://github.com/codeeNikhil/suggestion-api.git
    ```
 
 2.navigate to server  {cd server}
